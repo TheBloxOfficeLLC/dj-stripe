@@ -142,6 +142,9 @@ class StripeModel(StripeBaseModel):
             if self.djstripe_owner_account
             else ""
         )
+        ### MP Hack ###
+        owner_path_prefix = ""
+        ### MP Hack ###
         suffix = "test/" if not self.livemode else ""
         return f"https://dashboard.stripe.com/{owner_path_prefix}{suffix}"
 
@@ -157,9 +160,11 @@ class StripeModel(StripeBaseModel):
     @property
     def default_api_key(self) -> str:
         # If the class is abstract (StripeModel), fall back to default key.
-        if not self._meta.abstract:
-            if self.djstripe_owner_account:
-                return self.djstripe_owner_account.get_default_api_key(self.livemode)
+        ### MP Hack ###
+        # if not self._meta.abstract:
+        #     if self.djstripe_owner_account:
+        #         return self.djstripe_owner_account.get_default_api_key(self.livemode
+        ### MP Hack ###
         return djstripe_settings.get_default_api_key(self.livemode)
 
     def _get_stripe_account_id(self, api_key=None) -> Optional[str]:
@@ -224,9 +229,12 @@ class StripeModel(StripeBaseModel):
         """
         api_key = api_key or self.default_api_key
 
+        ### MP Hack ###
         # Prefer passed in stripe_account if set.
-        if not stripe_account:
-            stripe_account = self._get_stripe_account_id(api_key)
+        # if not stripe_account:
+        #     stripe_account = self._get_stripe_account_id(api_key)
+        stripe_account = self._get_stripe_account_id(api_key)
+        ### MP Hack ###
 
         return self.stripe_class.retrieve(
             id=self.id,
