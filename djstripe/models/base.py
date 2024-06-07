@@ -1049,7 +1049,14 @@ class StripeModel(StripeBaseModel):
         """
         current_ids = set()
         data_id = data.get("id")
+        print(data)
         stripe_account = getattr(data, "stripe_account", None)
+        print(stripe_account)
+        ### MP Hack ###
+        instance = cls()
+        stripe_account = instance._get_stripe_account_id(api_key)
+        print(stripe_account)        
+        ### MP Hack ###
 
         if data_id:
             # stop nested objects from trying to retrieve this object before
